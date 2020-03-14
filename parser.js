@@ -16,6 +16,13 @@ class Parser {
     return this.line[this.pos++]
   }
 
+  // skips all characters matching the given value
+  skip (val) {
+    while (this.peek() === val) {
+      this.next()
+    }
+  }
+
   // takes a log line and it's line number and returns an array of parsed tokens
   parse (line, num) {
     // init line & parsed tokens
@@ -28,10 +35,10 @@ class Parser {
     for (const format of this.formats) {
       switch (format) {
         case '%h':
-          parsed.push(this.token())
-          break
         case '%l':
         case '%u':
+          parsed.push(this.token())
+          break
         case '%t':
         case '%>s':
         case '%b':
@@ -51,6 +58,8 @@ class Parser {
   token (del = ' ') {
     // init the token
     let token = ''
+    // skip all leading whitespace
+    this.skip(' ')
 
     // grab everything until the delimiter
     while (this.peek() !== del) {
