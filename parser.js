@@ -16,10 +16,20 @@ class Parser {
     return this.line[this.pos++]
   }
 
+  // returns whether the next character matches the given value
+  //  val can be either a regex or a string (converted to regex)
+  matches (val) {
+    // init the regex using val; if it's a string, make sure to escape necessary chars:
+    //  https://developer.mozilla.org/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
+    const regex = RegExp(typeof val === 'string' ? val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : val)
+    // return whether it matches
+    return regex.test(this.peek())
+  }
+
   // skips all characters matching the given value
-  // if no value is provided, skip all spaces
+  //  if no value is provided, skip all whitespace
   skip (val = ' ') {
-    while (this.peek() === val) {
+    while (this.matches(val)) {
       this.next()
     }
   }
@@ -38,19 +48,19 @@ class Parser {
         case '%h':
         case '%l':
         case '%u':
-          parsed.push(this.tokenDel())
+          parsed.push(this.token())
           break
         case '%t': // TODO: date
-          parsed.push(this.tokenIn('[', ']'))
+          parsed.push(this.token(']', '['))
           break
         case '"%r"':
         case '"%{Referer}i"':
         case '"%{User-agent}i"':
-          parsed.push(this.tokenIn('"', '"'))
+          parsed.push(this.token('"', '"'))
           break
         case '%>s':
-        case '%b': // TODO: int
-          parsed.push(this.tokenDel())
+        case '%b':
+          parsed.push(parseInt(this.token()))
           break
         default:
           throw new Error(`unrecognized log format ${format}`)
@@ -61,33 +71,26 @@ class Parser {
     return parsed
   }
 
-  tokenDel (del = ' ') {
+  // parses a token by accepting all characters until the given end delimiter;
+  //  if a start is given also makes sure the token begins with it
+  token (end = ' ', start = null) {
     // init the token
     let token = ''
     // skip all leading whitespace
-    this.skip()
+    this.skip(/\s/)
 
-    // grab everything until the delimiter
-    while (this.peek() !== del) {
-      token += this.next()
+    // if we have an opening delimiter...
+    if (start !== null) {
+      // ...make sure it's matched
+      if (!this.matches(start)) {
+        throw new Error(`line ${this.num}: unexpected character ${this.peek()} at position ${this.pos} (expected ${this.start})`)
+      }
+      // consume the opening delimiter
+      this.next()
     }
 
-    // return the consumed token
-    return token
-  }
-
-  tokenIn (start = '"', end = '"') {
-    // init the token
-    let token = ''
-    // skip all leading whitespace
-    this.skip()
-
-    // make sure the token starts with the opening delimiter
-    if (this.next() !== start) {
-      throw new Error(`line ${this.num}: unexpected character ${this.line[this.pos - 1]} at position ${this.pos} (expected [)`)
-    }
     // grab everything until the closing delimiter
-    while (this.peek() !== end) {
+    while (!this.matches(end)) {
       token += this.next()
     }
     // consume the closing delimiter
