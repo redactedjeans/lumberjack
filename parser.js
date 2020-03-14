@@ -17,7 +17,8 @@ class Parser {
   }
 
   // skips all characters matching the given value
-  skip (val) {
+  // if no value is provided, skip all spaces
+  skip (val = ' ') {
     while (this.peek() === val) {
       this.next()
     }
@@ -37,14 +38,19 @@ class Parser {
         case '%h':
         case '%l':
         case '%u':
-          parsed.push(this.token())
+          parsed.push(this.tokenDel())
           break
-        case '%t':
-        case '%>s':
-        case '%b':
+        case '%t': // TODO: date
+          parsed.push(this.tokenIn('[', ']'))
+          break
         case '"%r"':
         case '"%{Referer}i"':
         case '"%{User-agent}i"':
+          parsed.push(this.tokenIn('"', '"'))
+          break
+        case '%>s':
+        case '%b': // TODO: int
+          parsed.push(this.tokenDel())
           break
         default:
           throw new Error(`unrecognized log format ${format}`)
@@ -55,16 +61,37 @@ class Parser {
     return parsed
   }
 
-  token (del = ' ') {
+  tokenDel (del = ' ') {
     // init the token
     let token = ''
     // skip all leading whitespace
-    this.skip(' ')
+    this.skip()
 
     // grab everything until the delimiter
     while (this.peek() !== del) {
       token += this.next()
     }
+
+    // return the consumed token
+    return token
+  }
+
+  tokenIn (start = '"', end = '"') {
+    // init the token
+    let token = ''
+    // skip all leading whitespace
+    this.skip()
+
+    // make sure the token starts with the opening delimiter
+    if (this.next() !== start) {
+      throw new Error(`line ${this.num}: unexpected character ${this.line[this.pos - 1]} at position ${this.pos} (expected [)`)
+    }
+    // grab everything until the closing delimiter
+    while (this.peek() !== end) {
+      token += this.next()
+    }
+    // consume the closing delimiter
+    this.next()
 
     // return the consumed token
     return token
