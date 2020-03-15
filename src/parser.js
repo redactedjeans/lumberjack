@@ -83,7 +83,7 @@ class Parser {
     if (start !== null) {
       // ...make sure it's matched
       if (!this.matches(start)) {
-        throw new Error(`line ${this.num}: unexpected character ${this.peek()} at position ${this.pos} (expected ${this.start})`)
+        throw new Error(`line ${this.num}: unexpected character ${this.peek()} at position ${this.pos} (expected ${start})`)
       }
       // consume the opening delimiter
       this.next()
