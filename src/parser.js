@@ -91,7 +91,9 @@ class Parser {
 
     // grab everything until the closing delimiter
     while (!this.matches(end)) {
-      token += this.next()
+      const next = this.next()
+      // if the char is backslash, consume the next one; otherwise consume this one
+      token += (next === '\\') ? this.next() : next
     }
     // consume the closing delimiter
     this.next()
