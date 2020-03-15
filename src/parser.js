@@ -1,23 +1,35 @@
+/** Class to parse log lines. */
 class Parser {
-  // takes a formats array and initializes a new Parser
+  /**
+   * @param {string[]} formats The formats for a single line log.
+   */
   constructor (formats) {
     this.formats = formats
   }
 
-  // returns the next character in the line without consuming it
+  /**
+   * Returns the next character in the line without consuming it.
+   * @returns {string} The next character in the line.
+   */
   peek () {
     if (this.pos === this.line.length) throw new Error(`line ${this.num}: unexpected EOL at position ${this.pos}`)
     return this.line[this.pos]
   }
 
-  // consumes and returns the next character in the line
+  /**
+   * Consumes and returns the next character in the line.
+   * @returns {string} The next character in the line.
+   */
   next () {
     if (this.pos === this.line.length) throw new Error(`line ${this.num}: unexpected EOL at position ${this.pos}`)
     return this.line[this.pos++]
   }
 
-  // returns whether the next character matches the given value
-  //  val can be either a regex or a string (converted to regex)
+  /**
+   * Returns whether the next character matches the given value.
+   * @param {string|RegExp} val The character or regex to match.
+   * @returns {boolean} Whether the next character matches val.
+   */
   matches (val) {
     // init the regex using val; if it's a string, make sure to escape necessary chars:
     //  https://developer.mozilla.org/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
@@ -26,15 +38,22 @@ class Parser {
     return regex.test(this.peek())
   }
 
-  // skips all characters matching the given value
-  //  if no value is provided, skip all whitespace
+  /**
+   * Skips all characters matching the given value.
+   * @param {string|RegExp} [val=' '] The value to skip.
+   */
   skip (val = ' ') {
     while (this.matches(val)) {
       this.next()
     }
   }
 
-  // takes a log line and it's line number and returns an array of parsed tokens
+  /**
+   * Parses a given log line and returns the resulting array of tokens.
+   * @param {string} line The log line to parse.
+   * @param {integer} num The line number of the log line.
+   * @return {Array} The log's parsed tokens.
+   */
   parse (line, num) {
     // init line & parsed tokens
     this.line = line
@@ -71,8 +90,13 @@ class Parser {
     return parsed
   }
 
-  // parses a token by accepting all characters until the given end delimiter;
-  //  if a start is given also makes sure the token begins with it
+  /**
+   * Parses a single token by accepting all characters until the given end delimiter;
+   *  if a start is given also makes sure the token begins with it.
+   * @param {string} [end=' '] The token's end delimiter.
+   * @param {string} [start] The token's start delimiter.
+   * @returns {string} The token.
+   */
   token (end = ' ', start = null) {
     // init the token
     let token = ''
