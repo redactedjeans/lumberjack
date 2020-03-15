@@ -8,7 +8,7 @@ class Parser {
   }
 
   /**
-   * Returns the next character in the line without consuming it.
+   * Return the next character in the line without consuming it.
    * @returns {string} The next character in the line.
    */
   peek () {
@@ -17,7 +17,7 @@ class Parser {
   }
 
   /**
-   * Consumes and returns the next character in the line.
+   * Consume and returns the next character in the line.
    * @returns {string} The next character in the line.
    */
   next () {
@@ -26,7 +26,7 @@ class Parser {
   }
 
   /**
-   * Returns whether the next character matches the given value.
+   * Return whether the next character matches the given value.
    * @param {string|RegExp} val The character or regex to match.
    * @returns {boolean} Whether the next character matches val.
    */
@@ -39,7 +39,7 @@ class Parser {
   }
 
   /**
-   * Skips all characters matching the given value.
+   * Skip all characters matching the given value.
    * @param {string|RegExp} [val=' '] The value to skip.
    */
   skip (val = ' ') {
@@ -49,7 +49,7 @@ class Parser {
   }
 
   /**
-   * Parses a given log line and returns the resulting array of tokens.
+   * Parse a given log line and returns the resulting array of tokens.
    * @param {string} line The log line to parse.
    * @param {integer} num The line number of the log line.
    * @return {Array} The log's parsed tokens.
@@ -91,8 +91,8 @@ class Parser {
   }
 
   /**
-   * Parses a single token by accepting all characters until the given end delimiter;
-   *  if a start is given also makes sure the token begins with it.
+   * Parse a single token by accepting all characters until the given end delimiter;
+   *  if a start is given also make sure the token begins with it.
    * @param {string} [end=' '] The token's end delimiter.
    * @param {string} [start] The token's start delimiter.
    * @returns {string} The token.
@@ -116,7 +116,7 @@ class Parser {
     // grab everything until the closing delimiter
     while (!this.matches(end)) {
       const next = this.next()
-      // if the char is backslash, consume the next one; otherwise consume this one
+      // if the char is a backslash, consume the next one; otherwise consume this one
       token += (next === '\\') ? this.next() : next
     }
     // consume the closing delimiter

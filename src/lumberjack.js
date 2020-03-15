@@ -8,7 +8,7 @@ class Lumberjack {
   }
 
   /**
-   * Sets the log format for the parser.
+   * Set the log format for the parser.
    * @param {string} format The log format string.
    * @return {Lumberjack}
    */
@@ -18,7 +18,7 @@ class Lumberjack {
   }
 
   /**
-   * Processes the given logs (ignoring empty lines) and returns the result.
+   * Process the given logs (ignoring empty lines) and return the result.
    * @param {string} logs The logs.
    * @returns {[Array]} The parsed logs as a two-dimensional array of tokens.
    */
