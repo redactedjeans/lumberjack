@@ -7,4 +7,4 @@ The main class, `Lumberjack`, can be invoked as such:
 const parsed = new Lumberjack().with(format).saw(logs)
 ```
 
-The `main.js` file expects a file named `logs` containing some apache access logs in the current directory. It will parse the logs and print the result to the console. To see it in action, run `node main` in the command line.
+The `src/main.js` file expects a file named `logs` containing some Apache access logs in the `src` directory. It will parse the logs and print the result to the console. To see it in action, run `node src/main` in the command line.

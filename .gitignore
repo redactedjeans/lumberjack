@@ -2,5 +2,9 @@
 *.swp
 .DS_Store
 
-# test files
+# IDE & local files
+.vscode/
 logs
+
+# compiled files
+node_modules/
