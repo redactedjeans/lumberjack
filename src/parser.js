@@ -93,11 +93,11 @@ class Parser {
   /**
    * Parse a single token by accepting all characters until the given end delimiter;
    *  if a start is given also make sure the token begins with it.
-   * @param {string} [end=' '] The token's end delimiter.
-   * @param {string} [start] The token's start delimiter.
+   * @param {string|RegExp} [end=/\s/] The token's end delimiter.
+   * @param {string|RegExp} [start] The token's start delimiter.
    * @returns {string} The token.
    */
-  token (end = ' ', start = null) {
+  token (end = /\s/, start = null) {
     // init the token
     let token = ''
     // skip all leading whitespace
